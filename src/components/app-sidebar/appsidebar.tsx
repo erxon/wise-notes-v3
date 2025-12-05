@@ -3,15 +3,11 @@
 import Link from "next/link";
 import {
   Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../ui/sidebar";
-import { NotebookIcon } from "lucide-react";
 import Image from "next/image";
 import NavMain from "./nav-main";
 

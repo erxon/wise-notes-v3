@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -5,7 +6,22 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "../ui/sidebar";
-import { PlusCircleIcon, NotebookIcon } from "lucide-react";
+import { PlusCircleIcon, NotebookIcon, SparklesIcon } from "lucide-react";
+
+const pages = [
+  {
+    id: 1,
+    name: "Notebooks",
+    link: "/notebooks",
+    icon: NotebookIcon,
+  },
+  {
+    id: 2,
+    name: "AI Chat",
+    link: "/chat",
+    icon: SparklesIcon,
+  },
+];
 
 export default function NavMain() {
   return (
@@ -22,14 +38,18 @@ export default function NavMain() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton>
-              <NotebookIcon />
-              <span>Notebooks</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        {pages.map((page) => (
+          <SidebarMenu key={page.id}>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href={page.link}>
+                  {page.icon && <page.icon />}
+                  <span>{page.name}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        ))}
       </SidebarGroupContent>
     </SidebarGroup>
   );
