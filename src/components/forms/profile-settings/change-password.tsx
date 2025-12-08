@@ -9,6 +9,7 @@ import {
   FormItem,
   FormControl,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -25,11 +26,22 @@ import { useState } from "react";
 import passwordChecker, { PasswordCheck } from "@/lib/utils/password-checker";
 import PasswordStrengthChecklist from "@/components/utils/password-strength-checklist";
 
-const formSchema = z.object({
-  currentPassword: z.string(),
-  newPassword: z.string(),
-  confirmNewPassword: z.string(),
-});
+const formSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Type your current password"),
+    newPassword: z
+      .string()
+      .min(1, "Type your new password")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        "Please set a stronger password"
+      ),
+    confirmNewPassword: z.string().min(1, "Retype your password"),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "Passwords do not match",
+    path: ["confirmNewPassword"],
+  });
 
 export default function ChangePasswordForm() {
   // Password toggle
@@ -61,11 +73,9 @@ export default function ChangePasswordForm() {
     // Set new password
     setNewPassword(e.target.value);
 
+    // Check password strength
     setShowPasswordChecklist(e.target.value.length > 0);
-
-    // Validate password strength
     const passwordCheckResult = passwordChecker(e.target.value);
-
     setPasswordCheckerResult(passwordCheckResult);
 
     form.setValue("newPassword", e.target.value);
@@ -77,7 +87,9 @@ export default function ChangePasswordForm() {
   };
 
   // On form submit
-  const onSubmit = () => {};
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    console.log(data);
+  };
 
   return (
     <Card>
@@ -102,6 +114,7 @@ export default function ChangePasswordForm() {
                         type={showPassword ? "text" : "password"}
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -122,6 +135,7 @@ export default function ChangePasswordForm() {
                           value={newPassword}
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -146,6 +160,7 @@ export default function ChangePasswordForm() {
                         type={showPassword ? "text" : "password"}
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
