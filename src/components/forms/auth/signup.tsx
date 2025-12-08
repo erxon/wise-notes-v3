@@ -1,7 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { createClient } from "@/lib/supabase/supabaseClient";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -24,10 +23,12 @@ import {
 import { Input } from "@/components/ui/input";
 import AuthFormsLayout from "./auth-forms-layout";
 import Link from "next/link";
-import { z } from "zod";
-import { createClient } from "@/lib/supabase/supabaseClient";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 const formSchema = z.object({
   email: z.email({ message: "Invalid email address" }),

@@ -11,8 +11,8 @@ const pages = [
     pathname: /^\/notebooks(?:\/|$)/,
   },
   {
-    pageName: "AI Chat",
-    pathname: /^\/chat(?:\/|$)/,
+    pageName: "Home",
+    pathname: /^\/home(?:\/|$)/,
   },
 ];
 

@@ -6,20 +6,24 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "../ui/sidebar";
-import { PlusCircleIcon, NotebookIcon, SparklesIcon } from "lucide-react";
+import {
+  IconNotebook,
+  IconBlocks,
+  IconCirclePlusFilled,
+} from "@tabler/icons-react";
 
 const pages = [
   {
     id: 1,
     name: "Notebooks",
     link: "/notebooks",
-    icon: NotebookIcon,
+    icon: IconNotebook,
   },
   {
     id: 2,
-    name: "AI Chat",
-    link: "/chat",
-    icon: SparklesIcon,
+    name: "Projects",
+    link: "/projects",
+    icon: IconBlocks,
   },
 ];
 
@@ -33,7 +37,7 @@ export default function NavMain() {
               tooltip="Quick Create"
               className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
             >
-              <PlusCircleIcon />
+              <IconCirclePlusFilled />
               <span>Create Notebook</span>
             </SidebarMenuButton>
           </SidebarMenuItem>

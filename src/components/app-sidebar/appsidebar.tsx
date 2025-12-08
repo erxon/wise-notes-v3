@@ -3,6 +3,8 @@
 import Link from "next/link";
 import {
   Sidebar,
+  SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -10,6 +12,7 @@ import {
 } from "../ui/sidebar";
 import Image from "next/image";
 import NavMain from "./nav-main";
+import { NavUser } from "./nav-user";
 
 export default function AppSidebar({
   ...props
@@ -33,7 +36,19 @@ export default function AppSidebar({
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <NavMain />
+      <SidebarContent>
+        <NavMain />
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser
+          user={{
+            name: "Ericson Castasus",
+            email: "l7a5o@example.com",
+            avatar:
+              "https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=76&q=80",
+          }}
+        />
+      </SidebarFooter>
     </Sidebar>
   );
 }
