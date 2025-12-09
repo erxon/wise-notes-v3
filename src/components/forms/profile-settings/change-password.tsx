@@ -26,6 +26,10 @@ import { useState } from "react";
 import passwordChecker, { PasswordCheck } from "@/lib/utils/password-checker";
 import PasswordStrengthChecklist from "@/components/utils/password-strength-checklist";
 
+// Server actions: update password
+import { updatePassword } from "@/app/server-actions/auth";
+import { toast } from "sonner";
+
 const formSchema = z
   .object({
     currentPassword: z.string().min(1, "Type your current password"),
@@ -87,8 +91,32 @@ export default function ChangePasswordForm() {
   };
 
   // On form submit
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      await updatePassword(data.newPassword, data.currentPassword);
+
+      toast.success("Success", {
+        description: "Password updated successfully",
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Something went wrong";
+
+      toast.error("Error", {
+        description: errorMessage,
+      });
+    }
+
+    // Reset form
+    form.reset();
+    setNewPassword("");
+    setShowPasswordChecklist(false);
+    setPasswordCheckerResult({
+      hasCapitalLetter: false,
+      hasNumber: false,
+      hasSpecialCharacter: false,
+      length: false,
+    });
   };
 
   return (

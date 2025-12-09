@@ -16,6 +16,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { createProfile } from "@/app/server-actions/profile";
+import { toast } from "sonner";
+import { useProfileStore } from "@/store/profileStore";
+
+/*
+TODO: Process avatar upload
+TODO: Fill the first name and last name fields with the user's profile data
+TODO: Change create profile into update profile
+ */
 
 const formSchema = z.object({
   avatar: z.optional(
@@ -31,17 +40,37 @@ const formSchema = z.object({
 
 export default function PersonalDetailsForm() {
   const isMobile = useIsMobile();
+  const profile = useProfileStore((state) => state.profile);
 
+  console.log(profile);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       avatar: undefined,
-      firstName: "",
-      lastName: "",
+      firstName: profile?.firstName || "",
+      lastName: profile?.lastName || "",
     },
   });
 
-  const onSubmit = () => {};
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      await createProfile({
+        firstName: data.firstName,
+        lastName: data.lastName,
+      });
+
+      toast.success("Success", {
+        description: "Profile updated successfully",
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Something went wrong";
+
+      toast.error("Error", {
+        description: errorMessage,
+      });
+    }
+  };
 
   return (
     <>
