@@ -1,7 +1,12 @@
+import { Suspense } from "react";
+import Notebooks from "./notebooks";
+
 export default function Page() {
   return (
-    <div>
-      <h1 className="font-medium text-4xl tracking-wide">Notebooks</h1>
+    <div className="">
+      <Suspense fallback={<div>Loading...</div>}>
+        <Notebooks />
+      </Suspense>
     </div>
   );
 }
