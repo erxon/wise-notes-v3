@@ -19,6 +19,13 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
 import type Notebook from "@/lib/types/notebook";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 
 export function Editor({
   currentNotebook,
@@ -38,6 +45,20 @@ export function Editor({
     description: currentNotebook.description,
   });
 
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value.length <= 50) {
+      setNotebook({ ...notebook, name: event.target.value });
+    }
+  };
+
+  const handleDescriptionChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    if (event.target.value.length <= 100) {
+      setNotebook({ ...notebook, description: event.target.value });
+    }
+  };
+
   const handleUpdate = async () => {
     if (notebook.name === "") {
       setError("Name is required");
@@ -54,9 +75,6 @@ export function Editor({
         description: `${notebook.name} has been updated`,
       });
 
-      setIsLoading(false);
-      onOpenChange(false);
-
       router.refresh();
     } catch (error) {
       toast.error("Something went wrong", {
@@ -65,9 +83,10 @@ export function Editor({
             ? error.message
             : "Unexpected error occurred. Please try again later.",
       });
-
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
+    onOpenChange(false);
   };
 
   return (
@@ -77,33 +96,34 @@ export function Editor({
           <DialogTitle>Update {currentNotebook.name}</DialogTitle>
           <DialogDescription>Update your notebook here</DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4">
-          <div className="grid gap-3">
+        <FieldGroup>
+          <Field>
             <Label htmlFor="name">Name</Label>
             <Input
               name="name"
               value={notebook.name}
-              onChange={(event) =>
-                setNotebook({ ...notebook, name: event.target.value })
-              }
+              onChange={handleNameChange}
               placeholder="Type the notebook name..."
             />
-            {error && (
-              <p className="text-red-500 text-sm font-semibold">{error}</p>
-            )}
-          </div>
-          <div className="grid gap-3">
-            <Label htmlFor="username-1">Description {"(optional)"}</Label>
+            <FieldDescription>{notebook.name.length}/50</FieldDescription>
+            {error && <FieldError>{error}</FieldError>}
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="username-1">
+              Description {"(optional)"}
+            </FieldLabel>
             <Textarea
               value={notebook.description}
-              onChange={(event) => {
-                setNotebook({ ...notebook, description: event.target.value });
-              }}
+              onChange={handleDescriptionChange}
               placeholder="Type the description here..."
               className="resize-none"
             />
-          </div>
-        </div>
+            <FieldDescription>
+              {notebook.description ? notebook.description.length : 0}
+              /100
+            </FieldDescription>
+          </Field>
+        </FieldGroup>
         <DialogFooter>
           <DialogClose onClick={() => setError("")} asChild>
             <Button disabled={isLoading} variant="outline">
@@ -111,7 +131,7 @@ export function Editor({
             </Button>
           </DialogClose>
           <Button disabled={isLoading} onClick={handleUpdate}>
-            Update
+            {isLoading ? "Updating" : "Update"}
             {isLoading && <Spinner />}
           </Button>
         </DialogFooter>

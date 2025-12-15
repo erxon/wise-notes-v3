@@ -12,7 +12,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { createNotebook } from "@/app/server-actions/notebooks";
@@ -20,6 +19,12 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
 import { IconPlus } from "@tabler/icons-react";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 
 export function CreateNotebook() {
   const [openChange, onOpenChange] = useState(false);
@@ -30,6 +35,20 @@ export function CreateNotebook() {
   });
   const [error, setError] = useState("");
   const router = useRouter();
+
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value.length <= 50) {
+      setNotebook({ ...notebook, name: event.target.value });
+    }
+  };
+
+  const handleDescriptionChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    if (event.target.value.length <= 100) {
+      setNotebook({ ...notebook, description: event.target.value });
+    }
+  };
 
   const handleCreate = async () => {
     if (notebook.name === "") {
@@ -78,31 +97,36 @@ export function CreateNotebook() {
             Create a new notebook to store your collections
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4">
-          <div className="grid gap-3">
-            <Label htmlFor="name">Name</Label>
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="name">Name</FieldLabel>
             <Input
-              name="name"
-              onChange={(event) =>
-                setNotebook({ ...notebook, name: event.target.value })
-              }
+              id="name"
+              onChange={handleNameChange}
+              value={notebook.name}
               placeholder="Type the notebook name..."
             />
+            <FieldDescription>{notebook.name.length}/50</FieldDescription>
             {error && (
               <p className="text-red-500 text-sm font-semibold">{error}</p>
             )}
-          </div>
-          <div className="grid gap-3">
-            <Label htmlFor="username-1">Description {"(optional)"}</Label>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="description">
+              Description {"(optional)"}
+            </FieldLabel>
             <Textarea
-              onChange={(event) => {
-                setNotebook({ ...notebook, description: event.target.value });
-              }}
+              id="description"
+              onChange={handleDescriptionChange}
+              value={notebook.description}
               placeholder="Type the description here..."
               className="resize-none"
             />
-          </div>
-        </div>
+            <FieldDescription>
+              {notebook.description.length}/100
+            </FieldDescription>
+          </Field>
+        </FieldGroup>
         <DialogFooter>
           <DialogClose onClick={() => setError("")} asChild>
             <Button disabled={isLoading} variant="outline">
@@ -110,7 +134,7 @@ export function CreateNotebook() {
             </Button>
           </DialogClose>
           <Button disabled={isLoading} onClick={handleCreate}>
-            Create
+            {isLoading ? "Creating..." : "Create"}
             {isLoading && <Spinner />}
           </Button>
         </DialogFooter>

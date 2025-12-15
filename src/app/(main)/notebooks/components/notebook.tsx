@@ -73,7 +73,7 @@ function NotebookMDropdownMenu({ notebook }: { notebook: Notebook }) {
 
 export default function Notebook({ notebook }: { notebook: Notebook }) {
   return (
-    <Card>
+    <Card className="h-[170px]">
       <CardHeader>
         <CardTitle>{notebook.name}</CardTitle>
         <CardDescription>{notebook.description}</CardDescription>
@@ -84,7 +84,7 @@ export default function Notebook({ notebook }: { notebook: Notebook }) {
           <NotebookMDropdownMenu notebook={notebook} />
         </CardAction>
       </CardHeader>
-      <CardFooter>
+      <CardFooter className="mt-auto">
         <p className="text-muted-foreground text-sm">
           Modified {elapsedTime(notebook.updatedAt)}
         </p>

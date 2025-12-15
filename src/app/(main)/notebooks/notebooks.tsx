@@ -31,9 +31,9 @@ export default async function Notebooks() {
 
   return (
     <>
-      <div className="mb-8 flex">
+      <div className="mb-8 flex flex-col items-center gap-4 md:flex-row">
         <h1>My Notebooks</h1>
-        <div className="ml-auto flex gap-2">
+        <div className="md:ml-auto flex gap-2">
           <TooltipWrapper content="Grid view">
             <Button size={"icon"} variant={"secondary"}>
               <IconLayoutGridFilled className="text-neutral-700" />
