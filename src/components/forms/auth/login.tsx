@@ -28,6 +28,9 @@ import { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useUserStore, UserState } from "@/store/userStore";
+import { useProfileStore, ProfileState } from "@/store/profileStore";
+import { getProfile } from "@/app/server-actions/profile";
 
 const formSchema = z.object({
   email: z.email("Invalid email"),
@@ -35,6 +38,9 @@ const formSchema = z.object({
 });
 
 export function LoginForm() {
+  const setUser = useUserStore((state: UserState) => state.setUser);
+  const setProfile = useProfileStore((state: ProfileState) => state.setProfile);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -53,12 +59,29 @@ export function LoginForm() {
     try {
       setIsLoading(true);
 
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data: userData, error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
 
       if (error) throw error;
+
+      // Retrieve user email and ID
+      const { email, id } = userData.user!;
+      // Set user store
+      setUser({ email: email || null, id: id || null });
+      // Set profile store (if user has profile)
+      // - Get profile
+      const profileData = await getProfile();
+      // - Set profile store
+      if (profileData) {
+        setProfile({
+          id: profileData.id,
+          firstName: profileData.firstName,
+          lastName: profileData.lastName,
+          avatar_url: profileData.avatarUrl,
+        });
+      }
 
       router.push("/notebooks");
     } catch (error) {
