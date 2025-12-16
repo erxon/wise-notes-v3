@@ -1,6 +1,7 @@
 "use client";
 
-import { IconNotebook } from "@tabler/icons-react";
+import { IconFile } from "@tabler/icons-react";
+import { Button } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -9,25 +10,27 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { CreateNotebook } from "./dialogs/create-notebook";
+import Link from "next/link";
 
-export function EmptyNotebooks() {
+export function EmptyNotebook() {
   return (
     <>
       <Empty>
         <EmptyHeader>
           <EmptyMedia variant="icon">
-            <IconNotebook />
+            <IconFile />
           </EmptyMedia>
-          <EmptyTitle>No Notebooks Yet</EmptyTitle>
+          <EmptyTitle>No Documents Yet</EmptyTitle>
           <EmptyDescription>
-            You haven&apos;t created any notebooks yet. Get started by creating
-            your first notebook.
+            You haven&apos;t created any documents yet. Get started by writing
+            your first document.
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
           <div className="flex gap-2">
-            <CreateNotebook />
+            <Link href={"/editor"}>
+              <Button>Create new document</Button>
+            </Link>
           </div>
         </EmptyContent>
       </Empty>

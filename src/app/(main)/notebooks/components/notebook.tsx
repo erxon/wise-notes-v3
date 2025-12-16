@@ -23,6 +23,9 @@ import {
 import DeleteDialog from "../dialogs/delete-dialog";
 import { useState } from "react";
 import { Editor } from "../dialogs/editor";
+import Link from "next/link";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import Image from "next/image";
 
 function NotebookMDropdownMenu({ notebook }: { notebook: Notebook }) {
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
@@ -73,18 +76,28 @@ function NotebookMDropdownMenu({ notebook }: { notebook: Notebook }) {
 
 export default function Notebook({ notebook }: { notebook: Notebook }) {
   return (
-    <Card className="h-[170px]">
+    <Card className="pt-0 min-h-[375px]">
+      <AspectRatio ratio={16 / 7} className="bg-muted rounded-t-lg">
+        <Image
+          src="https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80"
+          alt="Photo by Drew Beamer"
+          fill
+          className="h-full w-full object-cover dark:brightness-[0.2] rounded-t-lg"
+        />
+      </AspectRatio>
       <CardHeader>
         <CardTitle>{notebook.name}</CardTitle>
         <CardDescription>{notebook.description}</CardDescription>
         <CardAction className="flex gap-1">
-          <Button size={"sm"} variant={"outline"}>
-            Open
-          </Button>
           <NotebookMDropdownMenu notebook={notebook} />
         </CardAction>
       </CardHeader>
-      <CardFooter className="mt-auto">
+      <CardFooter className="mt-auto flex items-center gap-4">
+        <Link href={`/notebooks/${notebook.id}`}>
+          <Button role="link" size={"sm"} variant={"outline"}>
+            Open
+          </Button>
+        </Link>
         <p className="text-muted-foreground text-sm">
           Modified {elapsedTime(notebook.updatedAt)}
         </p>

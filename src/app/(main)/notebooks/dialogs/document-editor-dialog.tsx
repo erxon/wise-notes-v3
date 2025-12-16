@@ -1,0 +1,5 @@
+/*
+
+TODO Wrap editor in a dialog
+
+*/
