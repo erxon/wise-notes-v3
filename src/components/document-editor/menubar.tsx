@@ -1,10 +1,9 @@
 "use client";
 
 import { Editor } from "@tiptap/react";
-import { useEditorState } from "@tiptap/react";
 import { Button } from "../ui/button";
-import { ButtonGroup } from "../ui/button-group";
 import {
+  Icon,
   IconArrowBackUp,
   IconArrowForwardUp,
   IconBlockquote,
@@ -21,230 +20,207 @@ import {
   IconList,
   IconListNumbers,
   IconPilcrow,
-  IconPlus,
-  IconSeparator,
+  IconProps,
   IconStrikethrough,
 } from "@tabler/icons-react";
 import TooltipWrapper from "../utils/tooltip";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import React from "react";
+import { Level } from "@tiptap/extension-heading";
+import { cn } from "@/lib/utils";
 
-export default function MenuBar({ editor }: { editor: Editor }) {
-  // Read the current editor's state, and re-render the component when it changes
-  const editorState = useEditorState({
-    editor,
-    selector: (ctx) => {
-      return {
-        isBold: ctx.editor.isActive("bold") ?? false,
-        canBold: ctx.editor.can().chain().toggleBold().run() ?? false,
-        isItalic: ctx.editor.isActive("italic") ?? false,
-        canItalic: ctx.editor.can().chain().toggleItalic().run() ?? false,
-        isStrike: ctx.editor.isActive("strike") ?? false,
-        canStrike: ctx.editor.can().chain().toggleStrike().run() ?? false,
-        isCode: ctx.editor.isActive("code") ?? false,
-        canCode: ctx.editor.can().chain().toggleCode().run() ?? false,
-        canClearMarks: ctx.editor.can().chain().unsetAllMarks().run() ?? false,
-        isParagraph: ctx.editor.isActive("paragraph") ?? false,
-        isHeading1: ctx.editor.isActive("heading", { level: 1 }) ?? false,
-        isHeading2: ctx.editor.isActive("heading", { level: 2 }) ?? false,
-        isHeading3: ctx.editor.isActive("heading", { level: 3 }) ?? false,
-        isHeading4: ctx.editor.isActive("heading", { level: 4 }) ?? false,
-        isHeading5: ctx.editor.isActive("heading", { level: 5 }) ?? false,
-        isHeading6: ctx.editor.isActive("heading", { level: 6 }) ?? false,
-        isBulletList: ctx.editor.isActive("bulletList") ?? false,
-        isOrderedList: ctx.editor.isActive("orderedList") ?? false,
-        isCodeBlock: ctx.editor.isActive("codeBlock") ?? false,
-        isBlockquote: ctx.editor.isActive("blockquote") ?? false,
-        canUndo: ctx.editor.can().chain().undo().run() ?? false,
-        canRedo: ctx.editor.can().chain().redo().run() ?? false,
-      };
+interface ToolbarItemType {
+  id: string;
+  label: string;
+  icon: React.ForwardRefExoticComponent<IconProps & React.RefAttributes<Icon>>;
+  action: (e: Editor) => void;
+  state: string;
+  can?: string;
+}
+
+export default function MenuBar({
+  editor,
+  editorState,
+}: {
+  editor: Editor | null;
+  editorState: Record<string, boolean>;
+}) {
+  if (!editor) return null;
+
+  const IconMap = {
+    bold: IconBold,
+    italic: IconItalic,
+    code: IconCode,
+    strike: IconStrikethrough,
+    clear: IconClearFormatting,
+    h1: IconH1,
+    h2: IconH2,
+    h3: IconH3,
+    h4: IconH4,
+    h5: IconH5,
+    h6: IconH6,
+    list: IconList,
+    listNumber: IconListNumbers,
+    blockquote: IconBlockquote,
+    paragraph: IconPilcrow,
+    undo: IconArrowBackUp,
+    redo: IconArrowForwardUp,
+  };
+
+  const toolbarConfig = [
+    {
+      group: "marks",
+      items: [
+        {
+          id: "bold",
+          label: "Bold",
+          icon: IconMap["bold"],
+          action: (e: Editor) => e.chain().focus().toggleBold().run(),
+          state: "isBold",
+          can: "canBold",
+        },
+        {
+          id: "italic",
+          label: "Italic",
+          icon: IconMap["italic"],
+          action: (e: Editor) => e.chain().focus().toggleItalic().run(),
+          state: "isItalic",
+          can: "canItalic",
+        },
+        {
+          id: "strike",
+          label: "Strike",
+          icon: IconMap["strike"],
+          action: (e: Editor) => e.chain().focus().toggleStrike().run(),
+          state: "isStrike",
+          can: "canStrike",
+        },
+        {
+          id: "code",
+          label: "Code",
+          icon: IconMap["code"],
+          action: (e: Editor) => e.chain().focus().toggleCode().run(),
+          state: "isCode",
+          can: "canCode",
+        },
+      ],
     },
-  });
+    {
+      group: "headings",
+      items: [1, 2, 3, 4, 5, 6].map((level) => ({
+        id: `h${level}`,
+        label: `H${level}`,
+        icon: IconMap[`h${level as Level}`],
+        action: (e: Editor) =>
+          e
+            .chain()
+            .focus()
+            .toggleHeading({ level: level as Level })
+            .run(),
+        state: `isHeading${level}`,
+      })),
+    },
+    {
+      group: "lists",
+      items: [
+        {
+          id: "bullet",
+          label: "Bullet List",
+          icon: IconMap["list"],
+          action: (e: Editor) => e.chain().focus().toggleBulletList().run(),
+          state: "isBulletList",
+        },
+        {
+          id: "ordered",
+          label: "Ordered List",
+          icon: IconMap["listNumber"],
+          action: (e: Editor) => e.chain().focus().toggleOrderedList().run(),
+          state: "isOrderedList",
+        },
+      ],
+    },
+    {
+      group: "blocks",
+      items: [
+        {
+          id: "blockquote",
+          label: "Blockquote",
+          icon: IconMap["blockquote"],
+          action: (e: Editor) => e.chain().focus().toggleBlockquote().run(),
+          state: "isBlockquote",
+        },
+        {
+          id: "Codeblock",
+          label: "Code Block",
+          icon: IconMap["code"],
+          action: (e: Editor) => e.chain().focus().toggleCodeBlock().run(),
+          state: "isCodeBlock",
+        },
+      ],
+    },
+    {
+      group: "Undo Redo",
+      items: [
+        {
+          id: "undo",
+          label: "Undo",
+          icon: IconMap["undo"],
+          action: (e: Editor) => e.chain().focus().undo().run(),
+          state: "isUndo",
+          can: "canUndo",
+        },
+        {
+          id: "redo",
+          label: "Redo",
+          icon: IconMap["redo"],
+          action: (e: Editor) => e.chain().focus().redo().run(),
+          state: "isRedo",
+          can: "canRedo",
+        },
+      ],
+    },
+  ];
 
   return (
-    <ButtonGroup>
-      <ButtonGroup>
-        <Button
-          variant={"outline"}
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          disabled={!editorState.canBold}
-          className={editorState.isBold ? "is-active" : ""}
-        >
-          <IconBold />
-        </Button>
-        <Button
-          variant={"outline"}
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          disabled={!editorState.canItalic}
-          className={editorState.isItalic ? "is-active" : ""}
-        >
-          <IconItalic />
-        </Button>
-        <Button
-          variant={"outline"}
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          disabled={!editorState.canStrike}
-          className={editorState.isStrike ? "is-active" : ""}
-        >
-          <IconStrikethrough />
-        </Button>
-        <Button
-          variant={"outline"}
-          onClick={() => editor.chain().focus().toggleCode().run()}
-          disabled={!editorState.canCode}
-          className={editorState.isCode ? "is-active" : ""}
-        >
-          <IconCode />
-        </Button>
-      </ButtonGroup>
-      <ButtonGroup>
-        <Button
-          variant={"outline"}
-          onClick={() => editor.chain().focus().setParagraph().run()}
-          className={editorState.isParagraph ? "is-active" : ""}
-        >
-          <IconPilcrow />
-        </Button>
-        <Button
-          variant={"outline"}
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 1 }).run()
-          }
-          className={editorState.isHeading1 ? "is-active" : ""}
-        >
-          <IconH1 />
-        </Button>
-        <Button
-          variant={"outline"}
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
-          }
-          className={editorState.isHeading2 ? "is-active" : ""}
-        >
-          <IconH2 />
-        </Button>
-        <Button
-          variant={"outline"}
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 3 }).run()
-          }
-          className={editorState.isHeading3 ? "is-active" : ""}
-        >
-          <IconH3 />
-        </Button>
-        <Button
-          variant={"outline"}
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 4 }).run()
-          }
-          className={editorState.isHeading4 ? "is-active" : ""}
-        >
-          <IconH4 />
-        </Button>
-        <Button
-          variant={"outline"}
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 5 }).run()
-          }
-          className={editorState.isHeading5 ? "is-active" : ""}
-        >
-          <IconH5 />
-        </Button>
-        <Button
-          variant={"outline"}
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 6 }).run()
-          }
-          className={editorState.isHeading6 ? "is-active" : ""}
-        >
-          <IconH6 />
-        </Button>
-      </ButtonGroup>
-      <ButtonGroup>
-        <Button
-          variant={"outline"}
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={editorState.isBulletList ? "is-active" : ""}
-        >
-          <IconList />
-        </Button>
-        <Button
-          variant={"outline"}
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={editorState.isOrderedList ? "is-active" : ""}
-        >
-          <IconListNumbers />
-        </Button>
-      </ButtonGroup>
-      <ButtonGroup>
-        <TooltipWrapper content="Codeblock">
-          <Button
-            variant={"outline"}
-            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-            className={editorState.isCodeBlock ? "is-active" : ""}
-          >
-            <IconCode />
-          </Button>
-        </TooltipWrapper>
-        <TooltipWrapper content="Blockquote">
-          <Button
-            variant={"outline"}
-            onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            className={editorState.isBlockquote ? "is-active" : ""}
-          >
-            <IconBlockquote />
-          </Button>
-        </TooltipWrapper>
-      </ButtonGroup>
-      <ButtonGroup>
-        <TooltipWrapper content="Horizontal line">
-          <Button
-            variant={"outline"}
-            onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          >
-            <IconSeparator />
-          </Button>
-        </TooltipWrapper>
-        <TooltipWrapper content="New line">
-          <Button
-            variant={"outline"}
-            onClick={() => editor.chain().focus().setHardBreak().run()}
-          >
-            <IconPlus />
-          </Button>
-        </TooltipWrapper>
-      </ButtonGroup>
-      <ButtonGroup>
-        <TooltipWrapper content="Undo">
-          <Button
-            variant={"outline"}
-            onClick={() => editor.chain().focus().undo().run()}
-            disabled={!editorState.canUndo}
-          >
-            <IconArrowBackUp />
-          </Button>
-        </TooltipWrapper>
-        <TooltipWrapper content="Redo">
-          <Button
-            variant={"outline"}
-            onClick={() => editor.chain().focus().redo().run()}
-            disabled={!editorState.canRedo}
-          >
-            <IconArrowForwardUp />
-          </Button>
-        </TooltipWrapper>
-      </ButtonGroup>
-      <ButtonGroup>
-        <TooltipWrapper content="Clear formatting">
-          <Button
-            variant={"outline"}
-            onClick={() => {
-              editor.chain().focus().clearNodes().run();
-              editor.chain().focus().unsetAllMarks().run();
-            }}
-          >
-            <IconClearFormatting />
-          </Button>
-        </TooltipWrapper>
-      </ButtonGroup>
-    </ButtonGroup>
+    <div className="relative group">
+      <ScrollArea className="w-full whitespace-nowrap">
+        <div className="flex w-max space-x-2 p-2">
+          {toolbarConfig.map((group, idx) => (
+            <div
+              key={group.group}
+              className={`flex items-center gap-1 ${
+                idx !== toolbarConfig.length - 1 ? "border-r pr-2" : ""
+              }`}
+            >
+              {group.items.map((item: ToolbarItemType) => (
+                <TooltipWrapper key={item.id} content={item.label}>
+                  <Button
+                    variant={"ghost"}
+                    size={"sm"}
+                    className={cn(
+                      (editorState as Record<string, boolean>)[item.state] &&
+                        "bg-accent text-accent-foreground"
+                    )}
+                    disabled={
+                      item.can
+                        ? !(editorState as Record<string, boolean>)[item.can]
+                        : false
+                    }
+                    onClick={() => item.action(editor)}
+                  >
+                    <item.icon />
+                  </Button>
+                </TooltipWrapper>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-linear-to-l from-white to-transparent rounded-lg" />
+        <ScrollBar
+          orientation="horizontal"
+          className="transition-opacity opacity-0 hover:opacity-100 pt-1"
+        />
+      </ScrollArea>
+    </div>
   );
 }
