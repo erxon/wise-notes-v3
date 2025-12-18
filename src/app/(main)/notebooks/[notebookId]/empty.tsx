@@ -12,7 +12,9 @@ import {
 } from "@/components/ui/empty";
 import Link from "next/link";
 
-export function EmptyNotebook() {
+export function EmptyNotebook({ notebookId }: { notebookId?: string }) {
+  if (!notebookId) return null;
+
   return (
     <>
       <Empty>
@@ -28,7 +30,7 @@ export function EmptyNotebook() {
         </EmptyHeader>
         <EmptyContent>
           <div className="flex gap-2">
-            <Link href={"/editor"}>
+            <Link href={`/editor/${notebookId}`}>
               <Button>Create new document</Button>
             </Link>
           </div>

@@ -31,6 +31,10 @@ export const useEditorSync = () => {
       canItalic: editor.can().chain().focus().toggleItalic().run(),
       canStrike: editor.can().chain().focus().toggleStrike().run(),
       canCode: editor.can().chain().focus().toggleCode().run(),
+
+      // Undo and Redo
+      canUndo: editor.can().chain().focus().undo().run(),
+      canRedo: editor.can().chain().focus().redo().run(),
     });
   }, []);
 

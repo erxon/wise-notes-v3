@@ -215,7 +215,7 @@ export default function MenuBar({
             </div>
           ))}
         </div>
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-linear-to-l from-white to-transparent rounded-lg" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-linear-to-l from-white dark:from-black to-transparent rounded-lg" />
         <ScrollBar
           orientation="horizontal"
           className="transition-opacity opacity-0 hover:opacity-100 pt-1"

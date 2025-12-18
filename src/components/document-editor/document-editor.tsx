@@ -1,7 +1,3 @@
-/*
-TODO build editor using tiptap
-*/
-
 "use client";
 
 import { useEditor, EditorContent } from "@tiptap/react";
@@ -12,7 +8,22 @@ import { TextStyleKit } from "@tiptap/extension-text-style";
 import Heading from "@tiptap/extension-heading";
 import { useDebouncedCallback } from "use-debounce";
 import { useEditorSync } from "@/hooks/use-editor-sync";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
+import { IconCheck, IconPencil } from "@tabler/icons-react";
+import { Input } from "../ui/input";
+import { Spinner } from "../ui/spinner";
+import { toast } from "sonner";
+import { updateDocument } from "@/app/server-actions/document";
+
+interface Document {
+  id?: string;
+  notebookId: number;
+  title: string;
+  content: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 
 const levelClasses = {
   1: "text-4xl",
@@ -43,11 +54,37 @@ const CustomHeading = Heading.extend({
   },
 });
 
-export default function DocumentEditor() {
-  const { editorState, updateState } = useEditorSync();
+/*
+TODO - After the new document was saved, the user will be redirected to the document /editor/[notebookId]/[documentId]
+*/
 
-  const debounced = useDebouncedCallback((value) => {
-    console.log(value);
+export default function DocumentEditor({ notebookId }: { notebookId: string }) {
+  const { editorState, updateState } = useEditorSync();
+  const [editTitle, setEditTitle] = useState(false);
+  const [document, setDocument] = useState<Document>({
+    id: "",
+    notebookId: Number(notebookId),
+    title: "Untitled",
+    content: "",
+  });
+
+  const handleDocumentUpdate = async () => {
+    try {
+      const updatedDocument = await updateDocument(document);
+
+      setDocument(updatedDocument);
+    } catch (error) {
+      toast.error("Something went wrong", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "Unexpected error occurred. Please try again later.",
+      });
+    }
+  };
+
+  const debounced = useDebouncedCallback(async () => {
+    await handleDocumentUpdate();
   }, 1000);
 
   const editor = useEditor({
@@ -92,7 +129,7 @@ export default function DocumentEditor() {
         levels: [1, 2, 3, 4, 5, 6],
       }),
     ],
-    content: "",
+    content: document.content,
     immediatelyRender: false,
     editorProps: {
       attributes: {
@@ -101,7 +138,8 @@ export default function DocumentEditor() {
     },
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
-      debounced(html);
+      setDocument({ ...document, content: html });
+      debounced();
     },
     onTransaction: () => {
       updateState(editor);
@@ -114,13 +152,83 @@ export default function DocumentEditor() {
 
   return (
     <>
-      <div className="border rounded-lg">
+      <div className="flex items-center gap-2 mb-4">
+        <DocumentTitle
+          title={document.title}
+          setDocument={setDocument}
+          editTitle={editTitle}
+          setEditTitle={setEditTitle}
+        />
+      </div>
+      <div className="border rounded-lg shadow-lg">
         <MenuBar editor={editor} editorState={editorState} />
-
         <div className="mt-4 min-h-[calc(100vh-250px)] px-4">
           <EditorContent editor={editor} />
         </div>
       </div>
     </>
+  );
+}
+
+function DocumentTitle({
+  title,
+  setDocument,
+  editTitle,
+  setEditTitle,
+}: {
+  title: string;
+  setDocument: React.Dispatch<React.SetStateAction<Document>>;
+  editTitle: boolean;
+  setEditTitle: (editTitle: boolean) => void;
+}) {
+  return (
+    <div className="flex items-center gap-4">
+      {editTitle ? (
+        <Input
+          className="max-w-[300px]"
+          value={title}
+          onChange={(e) =>
+            setDocument((prev) => {
+              return {
+                ...prev,
+                title: e.target.value,
+              };
+            })
+          }
+          onBlur={() => {
+            if (title === "") {
+              setDocument((prev) => {
+                return {
+                  ...prev,
+                  title: "Untitled",
+                };
+              });
+            }
+            setEditTitle(false);
+          }}
+          placeholder="Type the title here..."
+        />
+      ) : (
+        <h1 className="text-2xl font-semibold">{title}</h1>
+      )}
+      <Button
+        size={"icon"}
+        variant={"ghost"}
+        onClick={() => {
+          if (title === "") {
+            setDocument((prev) => {
+              return {
+                ...prev,
+                title: "Untitled",
+              };
+            });
+          }
+
+          setEditTitle(!editTitle);
+        }}
+      >
+        {editTitle ? <IconCheck /> : <IconPencil />}
+      </Button>
+    </div>
   );
 }

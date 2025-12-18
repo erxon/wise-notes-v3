@@ -9,6 +9,11 @@ import {
 } from "@tabler/icons-react";
 import TooltipWrapper from "@/components/utils/tooltip";
 import Link from "next/link";
+/*
+
+TODO - Add state management
+
+*/
 
 export default async function Documents({ notebook }: { notebook: Notebook }) {
   const supabase = await createClient();
@@ -28,7 +33,7 @@ export default async function Documents({ notebook }: { notebook: Notebook }) {
   }
 
   if (data && data.length === 0) {
-    return <EmptyNotebook />;
+    return <EmptyNotebook notebookId={notebook.id} />;
   }
 
   return (
@@ -49,7 +54,7 @@ export default async function Documents({ notebook }: { notebook: Notebook }) {
               <IconLayoutListFilled className="text-neutral-700" />
             </Button>
           </TooltipWrapper>
-          <Link href={"/editor"}>
+          <Link href={`/editor/${notebook.id}`}>
             <Button size={"lg"}>
               <IconPlus />
               New document
