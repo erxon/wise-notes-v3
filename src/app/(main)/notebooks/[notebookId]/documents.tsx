@@ -40,7 +40,7 @@ export default async function Documents({ notebook }: { notebook: Notebook }) {
   return (
     <>
       <div className="mb-8 flex flex-col items-center gap-4 md:flex-row">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 text-center md:text-left">
           <h2>{notebook.name}</h2>
           <p className="text-muted-foreground">{notebook.description}</p>
         </div>

@@ -54,3 +54,19 @@ export async function updateDocument(document: Document) {
   if (error) throw error;
   return data;
 }
+
+export async function deleteDocument(documentId: string) {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from("document").delete().eq("id", documentId);
+
+  if (error) throw error;
+}
+
+export async function moveDocument(documentId: string, notebookId: number) {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from("document").update({ notebookId }).eq("id", documentId);
+
+  if (error) throw error;
+}

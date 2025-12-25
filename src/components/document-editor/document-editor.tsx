@@ -177,7 +177,12 @@ export default function DocumentEditor({
           editTitle={editTitle}
           setEditTitle={setEditTitle}
         />
-        {isSaving && <Spinner />}
+        {isSaving && (
+          <div className="flex items-center gap-2">
+            <Spinner />
+            <p>Saving...</p>
+          </div>
+        )}
       </div>
       <div className="border rounded-lg shadow-lg">
         <MenuBar editor={editor} editorState={editorState} />
