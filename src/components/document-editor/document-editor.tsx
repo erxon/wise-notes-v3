@@ -186,7 +186,7 @@ export default function DocumentEditor({
       </div>
       <div className="border rounded-lg shadow-lg">
         <MenuBar editor={editor} editorState={editorState} />
-        <div className="mt-4 min-h-[calc(100vh-250px)] px-4">
+        <div className="mt-4 min-h-[calc(100vh-300px)] px-4">
           <EditorContent editor={editor} />
         </div>
       </div>
