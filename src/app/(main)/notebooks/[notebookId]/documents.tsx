@@ -9,6 +9,7 @@ import {
 } from "@tabler/icons-react";
 import TooltipWrapper from "@/components/utils/tooltip";
 import Link from "next/link";
+import DocumentCard from "../components/document_card";
 /*
 
 TODO - Add state management
@@ -21,7 +22,7 @@ export default async function Documents({ notebook }: { notebook: Notebook }) {
   const { data, error } = await supabase
     .from("document")
     .select("*")
-    .eq("notebook_id", notebook.id)
+    .eq("notebookId", Number(notebook.id))
     .order("createdAt", { ascending: false });
 
   if (error) {
@@ -61,6 +62,11 @@ export default async function Documents({ notebook }: { notebook: Notebook }) {
             </Button>
           </Link>
         </div>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {data.map((document) => (
+          <DocumentCard key={document.id} document={document} />
+        ))}
       </div>
     </>
   );

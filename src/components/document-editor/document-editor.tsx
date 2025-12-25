@@ -15,6 +15,7 @@ import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
 import { toast } from "sonner";
 import { updateDocument } from "@/app/server-actions/document";
+import { useRouter } from "next/navigation";
 
 interface Document {
   id?: string;
@@ -58,19 +59,34 @@ const CustomHeading = Heading.extend({
 TODO - After the new document was saved, the user will be redirected to the document /editor/[notebookId]/[documentId]
 */
 
-export default function DocumentEditor({ notebookId }: { notebookId: string }) {
+export default function DocumentEditor({
+  notebookId,
+  existingDocument,
+}: {
+  notebookId: string;
+  existingDocument?: Document;
+}) {
+  const router = useRouter();
   const { editorState, updateState } = useEditorSync();
   const [editTitle, setEditTitle] = useState(false);
-  const [document, setDocument] = useState<Document>({
-    id: "",
-    notebookId: Number(notebookId),
-    title: "Untitled",
-    content: "",
-  });
+  const [isSaving, setIsSaving] = useState(false);
+  const [document, setDocument] = useState<Document>(
+    existingDocument || {
+      id: "",
+      notebookId: Number(notebookId),
+      title: "Untitled",
+      content: "",
+    }
+  );
 
   const handleDocumentUpdate = async () => {
     try {
+      setIsSaving(true);
       const updatedDocument = await updateDocument(document);
+
+      if (!existingDocument) {
+        router.replace(`/editor/${notebookId}/document/${updatedDocument.id}`);
+      }
 
       setDocument(updatedDocument);
     } catch (error) {
@@ -80,6 +96,8 @@ export default function DocumentEditor({ notebookId }: { notebookId: string }) {
             ? error.message
             : "Unexpected error occurred. Please try again later.",
       });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -159,6 +177,7 @@ export default function DocumentEditor({ notebookId }: { notebookId: string }) {
           editTitle={editTitle}
           setEditTitle={setEditTitle}
         />
+        {isSaving && <Spinner />}
       </div>
       <div className="border rounded-lg shadow-lg">
         <MenuBar editor={editor} editorState={editorState} />

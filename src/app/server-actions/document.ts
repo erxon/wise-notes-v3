@@ -7,7 +7,19 @@ export interface Document {
   notebookId: number;
   title: string;
   content: string;
-  createdAt?: Date;
+}
+
+export async function getDocument(documentId: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("document")
+    .select("*")
+    .eq("id", documentId)
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function updateDocument(document: Document) {
