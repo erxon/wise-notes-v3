@@ -1,7 +1,6 @@
 "use client";
 
 import { IconNotebook } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -13,7 +12,6 @@ import {
 import { CreateNotebook } from "./dialogs/create-notebook";
 
 export function EmptyNotebooks() {
-
   return (
     <>
       <Empty>
