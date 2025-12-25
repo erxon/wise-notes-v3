@@ -5,6 +5,10 @@ import { Separator } from "./ui/separator";
 import { usePathname } from "next/navigation";
 import { ModeToggle } from "./theme/mode-toggle";
 
+/*
+TODO - For document editing, add file naming functionality
+*/
+
 const pages = [
   {
     pageName: "Notebooks",
@@ -13,6 +17,10 @@ const pages = [
   {
     pageName: "Home",
     pathname: /^\/home(?:\/|$)/,
+  },
+  {
+    pageName: "Editor",
+    pathname: /^\/editor(?:\/|$)/,
   },
 ];
 
