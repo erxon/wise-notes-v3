@@ -7,7 +7,8 @@ export default async function Page({
 }: {
   params: Promise<{ notebookId: string; documentId: string }>;
 }) {
-  const { notebookId, documentId } = await params;
+  // notebookId is not used in this component
+  const { documentId } = await params;
 
   return (
     <Suspense fallback={<Spinner />}>

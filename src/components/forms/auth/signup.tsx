@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/supabaseClient";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -39,7 +40,6 @@ const formSchema = z.object({
 export function SignupForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -67,7 +67,9 @@ export function SignupForm() {
       if (error) throw error;
       router.push("/auth/signup-success");
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "Something went wrong");
+      toast.error(
+        error instanceof Error ? error.message : "Something went wrong"
+      );
     } finally {
       setIsLoading(false);
     }

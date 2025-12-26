@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getNotebooks } from "@/app/server-actions/notebooks";
 import { toast } from "sonner";
 import Notebook from "@/lib/types/notebook";
@@ -39,23 +39,22 @@ export default function MoveDocumentDialog({
     null
   );
 
-  const fetchNotebooks = useCallback(async () => {
-    try {
-      const fetchedNotebooks = await getNotebooks();
-      setNotebooks(fetchedNotebooks.data);
-    } catch (error) {
-      toast.error("Something went wrong", {
-        description:
-          error instanceof Error
-            ? error.message
-            : "Unexpected error occurred. Please try again later.",
-      });
-    }
-  }, []);
-
   useEffect(() => {
+    const fetchNotebooks = async () => {
+      try {
+        const fetchedNotebooks = await getNotebooks();
+        setNotebooks(fetchedNotebooks.data);
+      } catch (error) {
+        toast.error("Something went wrong", {
+          description:
+            error instanceof Error
+              ? error.message
+              : "Unexpected error occurred. Please try again later.",
+        });
+      }
+    };
     fetchNotebooks();
-  }, [fetchNotebooks]);
+  }, []);
 
   const handleMoveDocument = async () => {
     if (!documentId || !selectedNotebookId) return;

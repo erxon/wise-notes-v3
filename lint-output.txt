@@ -1,0 +1,147 @@
+
+> wise-notes-v3@0.1.0 lint
+> eslint
+
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\(main)\editor\[notebookId]\dialogs\delete-document.tsx
+  10:3  warning  'DialogTrigger' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\(main)\editor\[notebookId]\dialogs\move-document.tsx
+  57:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\(main)\editor\[notebookId]\dialogs\move-document.tsx:57:5
+  55 |
+  56 |   useEffect(() => {
+> 57 |     fetchNotebooks();
+     |     ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  58 |   }, [fetchNotebooks]);
+  59 |
+  60 |   const handleMoveDocument = async () => {  react-hooks/set-state-in-effect
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\(main)\editor\[notebookId]\document\[documentId]\document.tsx
+  1:10  warning  'getDocument' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\(main)\editor\[notebookId]\document\[documentId]\page.tsx
+  10:11  warning  'notebookId' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\(main)\editor\[notebookId]\page.tsx
+  7:3  warning  'BreadcrumbPage' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\(main)\notebooks\components\document_card.tsx
+  14:3  warning  'IconCornerRightUp' is defined but never used  @typescript-eslint/no-unused-vars
+  18:3  warning  'IconShare' is defined but never used          @typescript-eslint/no-unused-vars
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\components\forms\auth\signup.tsx
+  42:10  warning  'error' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\components\ui\sidebar.tsx
+  611:26  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\components\ui\sidebar.tsx:611:26
+  609 |   // Random width between 50 to 90%.
+  610 |   const width = React.useMemo(() => {
+> 611 |     return `${Math.floor(Math.random() * 40) + 50}%`;
+      |                          ^^^^^^^^^^^^^ Cannot call impure function
+  612 |   }, []);
+  613 |
+  614 |   return (  react-hooks/purity
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\hooks\use-composed-ref.ts
+  30:11  error  Error: This value cannot be modified
+
+Modifying component props or hook arguments is not allowed. Consider using a local variable instead.
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\hooks\use-composed-ref.ts:30:11
+  28 |     (instance: T | null) => {
+  29 |       if (libRef && "current" in libRef) {
+> 30 |         ;(libRef as { current: T | null }).current = instance
+     |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `libRef` cannot be modified
+  31 |       }
+  32 |
+  33 |       if (prevUserRef.current) {
+
+Hint: If this value is a Ref (value returned by `useRef()`), rename the variable to end in "Ref"  react-hooks/immutability
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\hooks\use-element-rect.ts
+  108:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\hooks\use-element-rect.ts:108:7
+  106 |   useEffect(() => {
+  107 |     if (!enabled || !isClientSide()) {
+> 108 |       setRect(initialRect)
+      |       ^^^^^^^ Avoid calling setState() directly within an effect
+  109 |       return
+  110 |     }
+  111 |  react-hooks/set-state-in-effect
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\hooks\use-is-breakpoint.ts
+  29:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\hooks\use-is-breakpoint.ts:29:5
+  27 |
+  28 |     // Set initial value
+> 29 |     setMatches(mql.matches)
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  30 |
+  31 |     // Add listener
+  32 |     mql.addEventListener("change", onChange)  react-hooks/set-state-in-effect
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\hooks\use-menu-navigation.ts
+  188:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\hooks\use-menu-navigation.ts:188:7
+  186 |   useEffect(() => {
+  187 |     if (query) {
+> 188 |       setSelectedIndex(autoSelectFirstItem ? 0 : -1)
+      |       ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  189 |     }
+  190 |   }, [query, autoSelectFirstItem])
+  191 |  react-hooks/set-state-in-effect
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\hooks\use-unmount.ts
+  11:3  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\hooks\use-unmount.ts:11:3
+   9 | export const useUnmount = (callback: (...args: Array<any>) => any) => {
+  10 |   const ref = useRef(callback)
+> 11 |   ref.current = callback
+     |   ^^^^^^^^^^^ Cannot update ref during render
+  12 |
+  13 |   useEffect(
+  14 |     () => () => {  react-hooks/refs
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\lib\tiptap-utils.ts
+  410:3  warning  Unused eslint-disable directive (no problems were reported from 'no-control-regex')
+  445:9  warning  Unused eslint-disable directive (no problems were reported from 'no-useless-escape')
+
+Γ£û 16 problems (7 errors, 9 warnings)
+  0 errors and 2 warnings potentially fixable with the `--fix` option.
+

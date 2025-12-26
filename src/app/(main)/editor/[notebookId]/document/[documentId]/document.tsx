@@ -1,4 +1,3 @@
-import { getDocument } from "@/app/server-actions/document";
 import DocumentEditor from "@/components/document-editor/document-editor";
 import { createClient } from "@/lib/supabase/supabaseServer";
 import {

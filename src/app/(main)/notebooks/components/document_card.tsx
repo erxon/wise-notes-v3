@@ -11,11 +11,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  IconCornerRightUp,
   IconCornerUpRight,
   IconDots,
   IconEdit,
-  IconShare,
   IconTrash,
 } from "@tabler/icons-react";
 import {
