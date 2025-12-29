@@ -1,6 +1,6 @@
 import Document from "./document";
 import { Suspense } from "react";
-import { Spinner } from "@/components/ui/spinner";
+import EditorSkeleton from "../../../components/editor-skeleton";
 
 export default async function Page({
   params,
@@ -11,7 +11,7 @@ export default async function Page({
   const { documentId } = await params;
 
   return (
-    <Suspense fallback={<Spinner />}>
+    <Suspense fallback={<EditorSkeleton />}>
       <Document documentId={documentId} />
     </Suspense>
   );

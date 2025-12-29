@@ -1,21 +1,24 @@
 import DocumentEditor from "@/components/document-editor/document-editor";
-import { createClient } from "@/lib/supabase/supabaseServer";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { createClient } from "@/lib/supabase/supabaseServer";
 
-export default async function Document({ documentId }: { documentId: string }) {
+export default async function EditorContent({
+  notebookId,
+}: {
+  notebookId: string;
+}) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("documents")
-    .select("*, notebooks(name)")
-    .eq("id", documentId)
+    .from("notebooks")
+    .select("*")
+    .eq("id", notebookId)
     .single();
 
   if (error) {
@@ -23,7 +26,7 @@ export default async function Document({ documentId }: { documentId: string }) {
   }
 
   return (
-    <div className="flex flex-col h-full gap-4">
+    <div>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -31,20 +34,13 @@ export default async function Document({ documentId }: { documentId: string }) {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/notebooks/${data.notebook_id}`}>
-              {data.notebooks?.name || "Notebook"}
+            <BreadcrumbLink href={`/notebooks/${data.id}`}>
+              {data.name || "Notebook"}
             </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{data.title || "Untitled"}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <DocumentEditor
-        notebookId={String(data.notebook_id)}
-        existingDocument={data}
-      />
+      <DocumentEditor notebookId={notebookId} />
     </div>
   );
 }

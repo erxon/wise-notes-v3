@@ -9,10 +9,6 @@ export default async function Notebooks() {
   const initialView =
     (cookieStore.get("notebook-view")?.value as "grid" | "list") || "grid";
 
-  if (notebooks && notebooks.length === 0) {
-    return <EmptyNotebooks />;
-  }
-
   if (error) {
     const errorMessage =
       error instanceof Error
@@ -24,6 +20,10 @@ export default async function Notebooks() {
         <p>{errorMessage}</p>
       </div>
     );
+  }
+
+  if (notebooks && notebooks.length === 0) {
+    return <EmptyNotebooks />;
   }
 
   return <NotebooksView notebooks={notebooks} initialView={initialView} />;
