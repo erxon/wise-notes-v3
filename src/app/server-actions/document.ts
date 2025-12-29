@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/supabaseServer";
 
 export interface Document {
   id?: string;
-  notebookId: number;
+  notebook_id: number;
   title: string;
   content: string;
 }
@@ -13,7 +13,7 @@ export async function getDocument(documentId: string) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("document")
+    .from("documents")
     .select("*")
     .eq("id", documentId)
     .single();
@@ -28,9 +28,9 @@ export async function updateDocument(document: Document) {
   if (!document.id) {
     // Create a new document
     const { data, error } = await supabase
-      .from("document")
+      .from("documents")
       .insert({
-        notebookId: Number(document.notebookId),
+        notebook_id: Number(document.notebook_id),
         title: document.title,
         content: document.content,
       })
@@ -41,9 +41,9 @@ export async function updateDocument(document: Document) {
   }
   // Update existing document
   const { data, error } = await supabase
-    .from("document")
+    .from("documents")
     .update({
-      notebookId: Number(document.notebookId),
+      notebook_id: Number(document.notebook_id),
       title: document.title,
       content: document.content,
     })
@@ -58,15 +58,21 @@ export async function updateDocument(document: Document) {
 export async function deleteDocument(documentId: string) {
   const supabase = await createClient();
 
-  const { error } = await supabase.from("document").delete().eq("id", documentId);
+  const { error } = await supabase
+    .from("documents")
+    .delete()
+    .eq("id", documentId);
 
-  if (error) throw error;
+  return { error };
 }
 
-export async function moveDocument(documentId: string, notebookId: number) {
+export async function moveDocument(documentId: string, notebook_id: number) {
   const supabase = await createClient();
 
-  const { error } = await supabase.from("document").update({ notebookId }).eq("id", documentId);
+  const { error } = await supabase
+    .from("documents")
+    .update({ notebook_id })
+    .eq("id", documentId);
 
   if (error) throw error;
 }

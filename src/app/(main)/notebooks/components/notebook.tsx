@@ -10,7 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { IconDots, IconPencil, IconTrash } from "@tabler/icons-react";
+import {
+  IconArrowRight,
+  IconDots,
+  IconPencil,
+  IconTrash,
+} from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -77,7 +82,7 @@ function NotebookMDropdownMenu({ notebook }: { notebook: Notebook }) {
 function CardView({ notebook }: { notebook: Notebook }) {
   return (
     <>
-      <Card className="pt-0 min-h-[375px]">
+      <Card className="pt-0 min-h-[375px] transition hover:shadow-md">
         <AspectRatio ratio={16 / 7} className="bg-muted rounded-t-lg">
           <Image
             src="https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80"
@@ -93,15 +98,14 @@ function CardView({ notebook }: { notebook: Notebook }) {
             <NotebookMDropdownMenu notebook={notebook} />
           </CardAction>
         </CardHeader>
-        <CardFooter className="mt-auto flex items-center gap-4">
-          <Link href={`/notebooks/${notebook.id}`}>
-            <Button role="link" size={"sm"} variant={"outline"}>
-              Open
-            </Button>
-          </Link>
-          <p className="text-muted-foreground text-sm">
-            Modified {elapsedTime(notebook.updatedAt)}
-          </p>
+        <CardFooter className="mt-auto flex items-center gap-4 justify-between text-muted-foreground text-sm">
+          <p>Modified {elapsedTime(notebook.updated_at)}</p>
+
+          <Button role="link" size={"sm"} variant="ghost" asChild>
+            <Link href={`/notebooks/${notebook.id}`}>
+              Open <IconArrowRight />
+            </Link>
+          </Button>
         </CardFooter>
       </Card>
     </>
@@ -125,14 +129,9 @@ function ListView({ notebook }: { notebook: Notebook }) {
 
       <div className="flex items-center gap-6">
         <p className="text-muted-foreground text-sm whitespace-nowrap hidden md:block">
-          {elapsedTime(notebook.updatedAt)}
+          {elapsedTime(notebook.updated_at)}
         </p>
         <div className="flex items-center gap-2">
-          <Link href={`/notebooks/${notebook.id}`}>
-            <Button size={"sm"} variant={"outline"}>
-              Open
-            </Button>
-          </Link>
           <NotebookMDropdownMenu notebook={notebook} />
         </div>
       </div>

@@ -1,8 +1,8 @@
 export default interface Document {
     id?: string;
-    notebookId: number;
+    notebook_id: number;
     title: string;
     content: string;
-    createdAt: string;
-    updatedAt?: string;
+    created_at: string;
+    updated_at?: string;
 }

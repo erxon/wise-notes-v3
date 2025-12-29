@@ -11,12 +11,13 @@ export default async function Documents({ notebook }: { notebook: Notebook }) {
     (cookieStore.get("document-view")?.value as "grid" | "list") || "grid";
 
   const { data, error } = await supabase
-    .from("document")
+    .from("documents")
     .select("*")
-    .eq("notebookId", Number(notebook.id))
-    .order("createdAt", { ascending: false });
+    .eq("notebook_id", Number(notebook.id))
+    .order("created_at", { ascending: false });
 
   if (error) {
+    console.log(error);
     return (
       <div>
         {error instanceof Error ? error.message : "Something went wrong"}

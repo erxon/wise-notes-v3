@@ -16,6 +16,7 @@ import Notebook from "@/lib/types/notebook";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from "next/navigation";
+import { getFriendlyErrorMessage } from "@/lib/utils/error-handler";
 
 export default function DeleteDialog({
   notebook,
@@ -31,27 +32,24 @@ export default function DeleteDialog({
   const [isLoading, setIsLoading] = useState(false);
 
   const onDelete = async () => {
-    try {
-      setIsLoading(true);
+    const { error } = await deleteNotebook(notebook.id);
 
-      await deleteNotebook(notebook.id);
-
-      toast.success("Notebook deleted successfully", {
-        description: `${notebook.name} has been deleted`,
-      });
-
+    if (error) {
       setIsLoading(false);
-      onOpenChange(false);
-
-      router.push("/notebooks");
-    } catch (error) {
-      toast.error("Something went wrong", {
-        description:
-          error instanceof Error
-            ? error.message
-            : "Unexpected error occurred. Please try again later.",
+      toast.error("Failed to delete notebook", {
+        description: getFriendlyErrorMessage(error),
       });
+      return;
     }
+
+    toast.success("Notebook deleted successfully", {
+      description: `${notebook.name} has been deleted`,
+    });
+
+    setIsLoading(false);
+    onOpenChange(false);
+
+    router.push("/notebooks");
   };
 
   return (

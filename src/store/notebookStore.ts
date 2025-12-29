@@ -6,17 +6,17 @@ export interface NotebookState {
     name: string;
     description?: string;
   } | null;
-  notebookId: string | null;
+  notebook_id: string | null;
   setNotebook: (notebook: NotebookState["notebook"]) => void;
-  setNotebookId: (notebookId: NotebookState["notebookId"]) => void;
+  setNotebookId: (notebook_id: NotebookState["notebook_id"]) => void;
 }
 
 export const createNotebookStore = (initProps?: Partial<NotebookState>) => {
   return createStore<NotebookState>((set) => ({
     notebook: initProps?.notebook ?? null,
-    notebookId: initProps?.notebookId ?? null,
+    notebook_id: initProps?.notebook_id ?? null,
     setNotebook: (notebook) => set({ notebook }),
-    setNotebookId: (notebookId) => set({ notebookId }),
+    setNotebookId: (notebook_id) => set({ notebook_id }),
   }));
 };
 

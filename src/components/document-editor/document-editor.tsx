@@ -19,11 +19,11 @@ import { useRouter } from "next/navigation";
 
 interface Document {
   id?: string;
-  notebookId: number;
+  notebook_id: number;
   title: string;
   content: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 const levelClasses = {
@@ -73,7 +73,7 @@ export default function DocumentEditor({
   const [document, setDocument] = useState<Document>(
     existingDocument || {
       id: "",
-      notebookId: Number(notebookId),
+      notebook_id: Number(notebookId),
       title: "Untitled",
       content: "",
     }

@@ -6,11 +6,12 @@ import {
   Card,
   CardAction,
   CardContent,
-  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import {
+  IconArrowRight,
   IconCornerUpRight,
   IconDots,
   IconEdit,
@@ -26,6 +27,7 @@ import Link from "next/link";
 import DeleteDocumentDialog from "../../editor/[notebookId]/dialogs/delete-document";
 import { useState } from "react";
 import MoveDocumentDialog from "../../editor/[notebookId]/dialogs/move-document";
+import elapsedTime from "@/lib/utils/elapsed-time";
 
 function DocumentActions({ document }: { document: Document }) {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -52,7 +54,7 @@ function DocumentActions({ document }: { document: Document }) {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link
-              href={`/editor/${document.notebookId}/document/${document.id}`}
+              href={`/editor/${document.notebook_id}/document/${document.id}`}
             >
               <IconEdit /> Edit
             </Link>
@@ -74,16 +76,17 @@ function DocumentActions({ document }: { document: Document }) {
 }
 
 function CardView({ document }: { document: Document }) {
-  const createdAt = new Date(document.createdAt);
+  const updatedAt = elapsedTime(
+    document.updated_at ? document.updated_at : document.created_at
+  );
   const text = document.content
     ? document.content.replace(/<[^>]*>?/gm, "")
     : "";
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="truncate">{document.title}</CardTitle>
-        <CardDescription>{createdAt.toDateString()}</CardDescription>
+    <Card className="transition hover:shadow-md">
+      <CardHeader className="flex justify-between items-center">
+        <CardTitle>{document.title}</CardTitle>
         <CardAction>
           <DocumentActions document={document} />
         </CardAction>
@@ -93,12 +96,23 @@ function CardView({ document }: { document: Document }) {
           {text.slice(0, 100) || "No content"}
         </p>
       </CardContent>
+      <CardFooter className="flex items-center justify-between text-sm text-muted-foreground">
+        <p>{updatedAt}</p>
+        <Button variant="ghost" size="sm" asChild>
+          <Link
+            href={`/editor/${document.notebook_id}/document/${document.id}`}
+          >
+            Open
+            <IconArrowRight />
+          </Link>
+        </Button>
+      </CardFooter>
     </Card>
   );
 }
 
 function ListView({ document }: { document: Document }) {
-  const createdAt = new Date(document.createdAt);
+  const createdAt = new Date(document.created_at);
   const text = document.content
     ? document.content.replace(/<[^>]*>?/gm, "")
     : "";
@@ -108,7 +122,7 @@ function ListView({ document }: { document: Document }) {
       <div className="flex flex-1 flex-col gap-1 min-w-0">
         <div className="flex items-center gap-2">
           <Link
-            href={`/editor/${document.notebookId}/document/${document.id}`}
+            href={`/editor/${document.notebook_id}/document/${document.id}`}
             className="font-semibold hover:underline truncate text-base"
           >
             {document.title}
@@ -124,7 +138,9 @@ function ListView({ document }: { document: Document }) {
           {createdAt.toDateString()}
         </p>
         <div className="flex items-center gap-2">
-          <Link href={`/editor/${document.notebookId}/document/${document.id}`}>
+          <Link
+            href={`/editor/${document.notebook_id}/document/${document.id}`}
+          >
             <Button size={"sm"} variant={"outline"}>
               Open
             </Button>

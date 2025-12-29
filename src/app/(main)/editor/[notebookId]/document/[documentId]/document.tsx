@@ -13,8 +13,8 @@ export default async function Document({ documentId }: { documentId: string }) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("document")
-    .select("*, notebook(name)")
+    .from("documents")
+    .select("*, notebooks(name)")
     .eq("id", documentId)
     .single();
 
@@ -31,8 +31,8 @@ export default async function Document({ documentId }: { documentId: string }) {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/notebooks/${data.notebookId}`}>
-              {data.notebook?.name || "Notebook"}
+            <BreadcrumbLink href={`/notebooks/${data.notebook_id}`}>
+              {data.notebooks?.name || "Notebook"}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -42,7 +42,7 @@ export default async function Document({ documentId }: { documentId: string }) {
         </BreadcrumbList>
       </Breadcrumb>
       <DocumentEditor
-        notebookId={String(data.notebookId)}
+        notebookId={String(data.notebook_id)}
         existingDocument={data}
       />
     </div>
