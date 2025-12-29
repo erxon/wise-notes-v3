@@ -53,8 +53,8 @@ export default function PersonalDetailsForm() {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       await updateProfile({
-        firstName: data.firstName,
-        lastName: data.lastName,
+        first_name: data.firstName,
+        last_name: data.lastName,
       });
 
       toast.success("Success", {

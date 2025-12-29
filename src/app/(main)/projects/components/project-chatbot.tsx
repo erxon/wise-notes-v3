@@ -14,7 +14,7 @@ interface Message {
   createdAt: Date;
 }
 
-export default function ProjectChatbot({ _projectId }: { _projectId: number }) {
+export default function ProjectChatbot({ projectId }: { projectId: number }) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",

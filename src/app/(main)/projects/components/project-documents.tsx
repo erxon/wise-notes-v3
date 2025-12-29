@@ -69,7 +69,7 @@ export default async function ProjectDocuments({
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Connected Documents</h2>
-        <AddDocumentDialog projectId={projectId} />
+        {documents.length > 0 && <AddDocumentDialog projectId={projectId} />}
       </div>
 
       {documents.length === 0 ? (

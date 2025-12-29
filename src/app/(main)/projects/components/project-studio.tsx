@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { IconCards, IconBrain, IconListCheck } from "@tabler/icons-react";
 
-export default function ProjectStudio({ _projectId }: { _projectId: number }) {
+export default function ProjectStudio({ projectId }: { projectId: number }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <Card className="hover:bg-muted/50 transition-colors cursor-pointer">

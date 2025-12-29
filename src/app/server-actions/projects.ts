@@ -6,7 +6,9 @@ import Project from "@/lib/types/project";
 
 export async function getProjects() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     throw new Error("User not authenticated");
@@ -27,7 +29,9 @@ export async function getProjects() {
 
 export async function createProject(formData: FormData) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     throw new Error("User not authenticated");
@@ -55,7 +59,7 @@ export async function createProject(formData: FormData) {
 
 export async function getProject(projectId: string) {
   const supabase = await createClient();
-  
+
   const { data, error } = await supabase
     .from("projects")
     .select("*")
@@ -69,15 +73,16 @@ export async function getProject(projectId: string) {
   return { data: data as Project };
 }
 
-export async function addDocumentToProject(projectId: number, documentId: number) {
+export async function addDocumentToProject(
+  projectId: number,
+  documentId: number
+) {
   const supabase = await createClient();
-  
-  const { error } = await supabase
-    .from("project_documents")
-    .insert({
-      project_id: projectId,
-      document_id: documentId,
-    });
+
+  const { error } = await supabase.from("project_documents").insert({
+    project_id: projectId,
+    document_id: documentId,
+  });
 
   if (error) {
     console.error(error);
@@ -87,9 +92,12 @@ export async function addDocumentToProject(projectId: number, documentId: number
   revalidatePath(`/projects/${projectId}`);
 }
 
-export async function removeDocumentFromProject(projectId: number, documentId: number) {
+export async function removeDocumentFromProject(
+  projectId: number,
+  documentId: number
+) {
   const supabase = await createClient();
-  
+
   const { error } = await supabase
     .from("project_documents")
     .delete()
@@ -104,10 +112,11 @@ export async function removeDocumentFromProject(projectId: number, documentId: n
 
 export async function getProjectDocuments(projectId: number) {
   const supabase = await createClient();
-  
+
   const { data, error } = await supabase
     .from("project_documents")
-    .select(`
+    .select(
+      `
       id,
       added_at,
       document:document_id (
@@ -119,7 +128,8 @@ export async function getProjectDocuments(projectId: number) {
            id
         )
       )
-    `)
+    `
+    )
     .eq("project_id", projectId)
     .order("added_at", { ascending: false });
 
@@ -130,17 +140,18 @@ export async function getProjectDocuments(projectId: number) {
   return { data };
 }
 
-export async function addDocumentsToProject(projectId: number, documentIds: number[]) {
+export async function addDocumentsToProject(
+  projectId: number,
+  documentIds: number[]
+) {
   const supabase = await createClient();
 
-  const records = documentIds.map(documentId => ({
+  const records = documentIds.map((documentId) => ({
     project_id: projectId,
     document_id: documentId,
   }));
 
-  const { error } = await supabase
-    .from("project_documents")
-    .insert(records);
+  const { error } = await supabase.from("project_documents").insert(records);
 
   if (error) {
     console.error(error);
@@ -150,7 +161,10 @@ export async function addDocumentsToProject(projectId: number, documentIds: numb
   revalidatePath(`/projects/${projectId}`);
 }
 
-export async function addNotebookToProject(projectId: number, notebookId: number) {
+export async function addNotebookToProject(
+  projectId: number,
+  notebookId: number
+) {
   const supabase = await createClient();
 
   const { data: documents, error: fetchError } = await supabase
@@ -170,12 +184,12 @@ export async function addNotebookToProject(projectId: number, notebookId: number
     .from("project_documents")
     .select("document_id")
     .eq("project_id", projectId);
-    
-  const existingDocIds = new Set(existingMap?.map(r => r.document_id));
-  
+
+  const existingDocIds = new Set(existingMap?.map((r) => r.document_id));
+
   const newRecords = documents
-    .filter(doc => !existingDocIds.has(doc.id))
-    .map(doc => ({
+    .filter((doc) => !existingDocIds.has(doc.id))
+    .map((doc) => ({
       project_id: projectId,
       document_id: doc.id,
     }));
@@ -184,14 +198,54 @@ export async function addNotebookToProject(projectId: number, notebookId: number
     return;
   }
 
-  const { error } = await supabase
-    .from("project_documents")
-    .insert(newRecords);
+  const { error } = await supabase.from("project_documents").insert(newRecords);
 
   if (error) {
     console.error(error);
     throw new Error("Failed to add notebook documents to project");
   }
 
+  revalidatePath(`/projects/${projectId}`);
+}
+
+export async function deleteProject(projectId: number) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("projects")
+    .delete()
+    .eq("id", projectId);
+
+  if (error) {
+    return { error };
+  }
+
+  revalidatePath("/projects");
+  return { error: null };
+}
+
+export async function updateProject(projectId: number, formData: FormData) {
+  const supabase = await createClient();
+
+  const name = formData.get("name") as string;
+  const description = formData.get("description") as string;
+
+  if (!name) {
+    throw new Error("Project name is required");
+  }
+
+  const { error } = await supabase
+    .from("projects")
+    .update({
+      name,
+      description,
+    })
+    .eq("id", projectId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/projects");
   revalidatePath(`/projects/${projectId}`);
 }
