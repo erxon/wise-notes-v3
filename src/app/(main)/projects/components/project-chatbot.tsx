@@ -1,9 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { IconSend, IconRobot, IconUser } from "@tabler/icons-react";
+import { IconSend } from "@tabler/icons-react";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,7 +14,7 @@ interface Message {
   createdAt: Date;
 }
 
-export default function ProjectChatbot({ projectId }: { projectId: number }) {
+export default function ProjectChatbot({ _projectId }: { _projectId: number }) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",

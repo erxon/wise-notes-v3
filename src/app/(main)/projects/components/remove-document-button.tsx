@@ -37,7 +37,7 @@ export default function RemoveDocumentButton({
       await removeDocumentFromProject(projectId, documentId);
       toast.success("Document removed from project");
       setOpen(false);
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to remove document");
     } finally {
       setLoading(false);
@@ -59,8 +59,8 @@ export default function RemoveDocumentButton({
         <AlertDialogHeader>
           <AlertDialogTitle>Remove Document?</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to remove "{documentTitle}" from this project?
-            This will not delete the document itself.
+            Are you sure you want to remove &quot;{documentTitle}&quot; from
+            this project? This will not delete the document itself.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

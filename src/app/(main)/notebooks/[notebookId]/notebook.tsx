@@ -6,7 +6,7 @@ export default async function Notebook({ notebookId }: { notebookId: string }) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("notebook")
+    .from("notebooks")
     .select("*")
     .eq("id", Number(notebookId))
     .maybeSingle();

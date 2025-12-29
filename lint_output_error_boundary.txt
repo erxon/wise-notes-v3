@@ -1,0 +1,40 @@
+
+> wise-notes-v3@0.1.0 lint
+> eslint
+
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\(main)\editor\[notebookId]\dialogs\delete-document.tsx
+  18:10  warning  'PostgrestError' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\(main)\projects\[projectId]\page.tsx
+  19:12  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\(main)\projects\components\project-chatbot.tsx
+  17:42  warning  '_projectId' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\(main)\projects\components\project-documents.tsx
+  20:12  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\(main)\projects\components\project-studio.tsx
+  11:41  warning  '_projectId' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\(main)\projects\components\remove-document-button.tsx
+  40:14  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\(main)\projects\dialogs\add-document-dialog.tsx
+  111:14  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+  128:14  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\app\server-actions\document.ts
+  4:10  warning  'PostgrestError' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\lib\tiptap-utils.ts
+  410:3  warning  Unused eslint-disable directive (no problems were reported from 'no-control-regex')
+  445:9  warning  Unused eslint-disable directive (no problems were reported from 'no-useless-escape')
+
+C:\Users\erics\Desktop\ETON\PROJECTS\1_PROJECTS (MAIN)\wise-notes-v3\src\lib\utils\error-handler.ts
+  7:48  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+Γ£û 12 problems (1 error, 11 warnings)
+  0 errors and 2 warnings potentially fixable with the `--fix` option.
+

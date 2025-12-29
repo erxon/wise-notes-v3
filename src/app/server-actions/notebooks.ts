@@ -17,10 +17,10 @@ export async function getNotebooks() {
   const user_id = user.user.id;
 
   const { data, error } = await supabase
-    .from("notebook")
+    .from("notebooks")
     .select("*")
     .eq("user_id", user_id)
-    .order("createdAt", { ascending: false });
+    .order("created_at", { ascending: false });
 
   if (error) return { data: [], error: error };
 
@@ -31,7 +31,7 @@ export async function createNotebook(notebook: Notebook) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("notebook")
+    .from("notebooks")
     .insert({
       name: notebook.name,
       description: notebook.description,
@@ -47,27 +47,27 @@ export async function deleteNotebook(notebookId: string) {
   const supabase = await createClient();
 
   const { error } = await supabase
-    .from("notebook")
+    .from("notebooks")
     .delete()
     .eq("id", notebookId);
 
-  if (error) throw error;
+  return { error };
 }
 
 export async function updateNotebook(notebookId: string, notebook: Notebook) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("notebook")
+    .from("notebooks")
     .update({
       name: notebook.name,
       description: notebook.description,
-      updatedAt: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     })
     .eq("id", notebookId)
     .select("*")
     .single();
-
+  console.log(error);
   if (error) throw error;
   return data;
 }

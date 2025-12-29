@@ -113,9 +113,10 @@ export async function getProjectDocuments(projectId: number) {
       document:document_id (
         id,
         title,
-        updatedAt,
-        notebook:notebookId (
-           name
+        updated_at,
+        notebooks:notebook_id (
+           name,
+           id
         )
       )
     `)
@@ -153,9 +154,9 @@ export async function addNotebookToProject(projectId: number, notebookId: number
   const supabase = await createClient();
 
   const { data: documents, error: fetchError } = await supabase
-    .from("document")
+    .from("documents")
     .select("id")
-    .eq("notebookId", notebookId);
+    .eq("notebook_id", notebookId);
 
   if (fetchError || !documents) {
     throw new Error("Failed to fetch notebook documents");

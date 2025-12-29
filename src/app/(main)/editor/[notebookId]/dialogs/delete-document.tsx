@@ -14,6 +14,7 @@ import React from "react";
 import { toast } from "sonner";
 import { deleteDocument } from "@/app/server-actions/document";
 import { useRouter } from "next/navigation";
+import { getFriendlyErrorMessage } from "@/lib/utils/error-handler";
 
 export default function DeleteDocumentDialog({
   open,
@@ -28,19 +29,17 @@ export default function DeleteDocumentDialog({
   const onDelete = async () => {
     if (!documentId) return;
 
-    try {
-      await deleteDocument(documentId);
-      onOpenChange(false);
-      toast.success("Document deleted successfully");
-      router.refresh();
-    } catch (error) {
-      toast.error("Something went wrong", {
-        description:
-          error instanceof Error
-            ? error.message
-            : "Unexpected error occurred. Please try again later.",
+    const { error } = await deleteDocument(documentId);
+    if (error) {
+      toast.error("Failed to delete document", {
+        description: getFriendlyErrorMessage(error),
       });
+      return;
     }
+
+    onOpenChange(false);
+    toast.success("Document deleted successfully");
+    router.refresh();
   };
 
   return (

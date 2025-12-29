@@ -18,7 +18,7 @@ export default async function Page({
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("notebook")
+    .from("notebooks")
     .select("*")
     .eq("id", notebookId)
     .single();

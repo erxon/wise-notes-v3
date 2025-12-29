@@ -16,7 +16,7 @@ export const getProfile = async () => {
     const user_id = user.user.id;
 
     const { data, error } = await supabase
-      .from("profile")
+      .from("profiles")
       .select("*")
       .eq("id", user_id)
       .single();
@@ -36,7 +36,7 @@ export const createProfile = async (profile: Profile) => {
     const user_id = user.user.id;
 
     const { error } = await supabase
-      .from("profile")
+      .from("profiles")
       .insert([{ id: user_id, ...profile }]);
     if (error) throw error;
   }
@@ -51,7 +51,7 @@ export const updateProfile = async (profile: Profile) => {
     const user_id = user.user.id;
 
     const { error } = await supabase
-      .from("profile")
+      .from("profiles")
       .update({ id: user_id, ...profile });
     if (error) throw error;
   }

@@ -59,9 +59,9 @@ export default function AddDocumentDialog({
       const fetchDocuments = async () => {
         const supabase = createClient();
         const { data } = await supabase
-          .from("document")
+          .from("documents")
           .select("*")
-          .eq("notebookId", parseInt(selectedNotebookId));
+          .eq("notebook_id", parseInt(selectedNotebookId));
 
         if (data) {
           setDocuments(data as Document[]);
@@ -108,7 +108,7 @@ export default function AddDocumentDialog({
       setOpen(false);
       setSelectedDocumentIds(new Set());
       setSelectedNotebookId("");
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to add documents");
     } finally {
       setLoading(false);
@@ -125,7 +125,7 @@ export default function AddDocumentDialog({
       toast.success("All notebook documents added");
       setSelectedDocumentIds(new Set());
       setSelectedNotebookId("");
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to add notebook");
     } finally {
       setLoading(false);

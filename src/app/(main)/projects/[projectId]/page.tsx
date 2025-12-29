@@ -12,20 +12,22 @@ interface PageProps {
 export default async function ProjectPage({ params }: PageProps) {
   const { projectId } = await params;
 
+  let project;
   try {
-    const { data: project } = await getProject(projectId);
-
-    if (!project) {
-      notFound();
-    }
-
-    return (
-      <ProjectDetailView
-        project={project}
-        documentsContent={<ProjectDocuments projectId={project.id} />}
-      />
-    );
-  } catch (error) {
+    const { data } = await getProject(projectId);
+    project = data;
+  } catch (_error) {
     notFound();
   }
+
+  if (!project) {
+    notFound();
+  }
+
+  return (
+    <ProjectDetailView
+      project={project}
+      documentsContent={<ProjectDocuments projectId={project.id} />}
+    />
+  );
 }
