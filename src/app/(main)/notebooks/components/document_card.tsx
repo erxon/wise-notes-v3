@@ -138,13 +138,6 @@ function ListView({ document }: { document: Document }) {
           {createdAt.toDateString()}
         </p>
         <div className="flex items-center gap-2">
-          <Link
-            href={`/editor/${document.notebook_id}/document/${document.id}`}
-          >
-            <Button size={"sm"} variant={"outline"}>
-              Open
-            </Button>
-          </Link>
           <DocumentActions document={document} />
         </div>
       </div>
