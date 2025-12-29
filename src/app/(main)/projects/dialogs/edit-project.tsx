@@ -55,7 +55,7 @@ export default function EditProjectDialog({
         <DialogHeader>
           <DialogTitle>Edit Project</DialogTitle>
           <DialogDescription>
-            Update your project's name and description.
+            Update your project&apos;s name and description.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
