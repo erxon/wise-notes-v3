@@ -15,10 +15,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { createNotebook } from "@/app/server-actions/notebooks";
+import { deleteObjectFromS3 } from "@/app/server-actions/s3";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
 import { IconPlus } from "@tabler/icons-react";
+import { ImageUpload } from "@/components/image-upload";
 import {
   Field,
   FieldDescription,
@@ -32,6 +34,7 @@ export function CreateNotebook() {
   const [notebook, setNotebook] = useState({
     name: "",
     description: "",
+    cover_image_key: "",
   });
   const [error, setError] = useState("");
   const router = useRouter();
@@ -62,13 +65,9 @@ export function CreateNotebook() {
     try {
       const createdNotebook = await createNotebook(notebook);
 
-      console.log(createdNotebook);
-
       toast.success("Your notebook has been created successfully", {
-        description: `${notebook.name} has been created`,
+        description: `${createdNotebook.name} has been created`,
       });
-
-      router.refresh();
     } catch (error) {
       toast.error("Something went wrong", {
         description:
@@ -80,6 +79,7 @@ export function CreateNotebook() {
 
     setIsLoading(false);
     onOpenChange(false);
+    router.refresh();
   };
 
   return (
@@ -125,6 +125,22 @@ export function CreateNotebook() {
             <FieldDescription>
               {notebook.description.length}/100
             </FieldDescription>
+          </Field>
+          <Field>
+            <FieldLabel>Cover Image</FieldLabel>
+            <ImageUpload
+              value={notebook.cover_image_key}
+              onChange={(key) =>
+                setNotebook({ ...notebook, cover_image_key: key })
+              }
+              onRemove={async () => {
+                if (notebook.cover_image_key) {
+                  await deleteObjectFromS3(notebook.cover_image_key);
+                }
+                setNotebook({ ...notebook, cover_image_key: "" });
+              }}
+              className="w-full"
+            />
           </Field>
         </FieldGroup>
         <DialogFooter>

@@ -19,6 +19,8 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
 import type Notebook from "@/lib/types/notebook";
+import { ImageUpload } from "@/components/image-upload";
+import { deleteObjectFromS3 } from "@/app/server-actions/s3";
 import {
   Field,
   FieldDescription,
@@ -43,6 +45,7 @@ export function Editor({
   const [notebook, setNotebook] = useState({
     name: currentNotebook.name,
     description: currentNotebook.description,
+    cover_image_key: currentNotebook.cover_image_key,
   });
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,6 +125,26 @@ export function Editor({
               {notebook.description ? notebook.description.length : 0}
               /100
             </FieldDescription>
+          </Field>
+          <Field>
+            <FieldLabel>Cover Image</FieldLabel>
+            <ImageUpload
+              value={notebook.cover_image_key}
+              onChange={(key) =>
+                setNotebook({ ...notebook, cover_image_key: key })
+              }
+              onRemove={async () => {
+                if (
+                  notebook.cover_image_key &&
+                  notebook.cover_image_key !== currentNotebook.cover_image_key
+                ) {
+                  // Only delete from S3 if it was uploaded in this session
+                  await deleteObjectFromS3(notebook.cover_image_key);
+                }
+                setNotebook({ ...notebook, cover_image_key: "" });
+              }}
+              className="w-full"
+            />
           </Field>
         </FieldGroup>
         <DialogFooter>

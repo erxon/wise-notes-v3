@@ -26,11 +26,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import DeleteDialog from "../dialogs/delete-dialog";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Editor } from "../dialogs/editor";
 import Link from "next/link";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Image from "next/image";
+import { getNotebookImage } from "@/app/server-actions/notebooks";
 
 function NotebookMDropdownMenu({ notebook }: { notebook: Notebook }) {
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
@@ -80,13 +81,30 @@ function NotebookMDropdownMenu({ notebook }: { notebook: Notebook }) {
 }
 
 function CardView({ notebook }: { notebook: Notebook }) {
+  const [image, setImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchImage = async () => {
+      const image = await getNotebookImage(notebook.id);
+      if (isMounted) setImage(image.data);
+    };
+    fetchImage();
+    return () => {
+      isMounted = false;
+    };
+  }, [notebook.id]);
+
   return (
     <>
       <Card className="pt-0 min-h-[375px] transition hover:shadow-md">
         <AspectRatio ratio={16 / 7} className="bg-muted rounded-t-lg">
           <Image
-            src="https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80"
-            alt="Photo by Drew Beamer"
+            src={
+              image ||
+              "https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80"
+            }
+            alt={notebook.name}
             fill
             className="h-full w-full object-cover dark:brightness-[0.2] rounded-t-lg"
           />
