@@ -14,7 +14,7 @@ export default async function ProjectPage({ params }: PageProps) {
 
   let project;
   try {
-    const { data } = await getProject(projectId);
+    const { data } = await getProject(parseInt(projectId));
     project = data;
   } catch (_error) {
     notFound();

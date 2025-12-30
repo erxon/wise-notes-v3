@@ -17,16 +17,22 @@ import { IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { createProject } from "@/app/server-actions/projects";
+import { ImageUpload } from "@/components/image-upload";
+import { deleteObjectFromS3 } from "@/app/server-actions/s3";
 
 export default function CreateProject() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [coverImageKey, setCoverImageKey] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
+    if (coverImageKey) {
+      formData.append("cover_image_key", coverImageKey);
+    }
 
     try {
       await createProject(formData);
@@ -75,6 +81,21 @@ export default function CreateProject() {
               name="description"
               placeholder="Project description (optional)"
               disabled={loading}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Cover Image</Label>
+            <ImageUpload
+              value={coverImageKey}
+              onChange={setCoverImageKey}
+              onRemove={async () => {
+                if (coverImageKey) {
+                  await deleteObjectFromS3(coverImageKey);
+                }
+                setCoverImageKey("");
+              }}
+              className="w-full"
+              folder="projects"
             />
           </div>
           <DialogFooter>

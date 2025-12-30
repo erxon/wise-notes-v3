@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/supabaseServer";
 import { revalidatePath } from "next/cache";
 import Project from "@/lib/types/project";
+import { getAuthenticatedUrl } from "./s3";
 
 export async function getProjects() {
   const supabase = await createClient();
@@ -39,6 +40,7 @@ export async function createProject(formData: FormData) {
 
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
+  const cover_image_key = formData.get("cover_image_key") as string;
 
   if (!name) {
     throw new Error("Project name is required");
@@ -48,6 +50,7 @@ export async function createProject(formData: FormData) {
     name,
     description,
     user_id: user.id,
+    cover_image_key,
   });
 
   if (error) {
@@ -57,7 +60,7 @@ export async function createProject(formData: FormData) {
   revalidatePath("/projects");
 }
 
-export async function getProject(projectId: string) {
+export async function getProject(projectId: number) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -229,6 +232,7 @@ export async function updateProject(projectId: number, formData: FormData) {
 
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
+  const cover_image_key = formData.get("cover_image_key") as string;
 
   if (!name) {
     throw new Error("Project name is required");
@@ -239,6 +243,7 @@ export async function updateProject(projectId: number, formData: FormData) {
     .update({
       name,
       description,
+      cover_image_key,
     })
     .eq("id", projectId);
 
@@ -248,4 +253,21 @@ export async function updateProject(projectId: number, formData: FormData) {
 
   revalidatePath("/projects");
   revalidatePath(`/projects/${projectId}`);
+}
+
+export async function getProjectImage(projectId: number) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("projects")
+    .select("cover_image_key")
+    .eq("id", projectId)
+    .single();
+
+  if (error || !data?.cover_image_key) {
+    return { data: null };
+  }
+
+  const url = await getAuthenticatedUrl(data.cover_image_key);
+  return { data: url };
 }

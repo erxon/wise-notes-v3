@@ -83,14 +83,17 @@ function NotebookMDropdownMenu({ notebook }: { notebook: Notebook }) {
 function CardView({ notebook }: { notebook: Notebook }) {
   const [image, setImage] = useState<string | null>(null);
 
-  const fetchImage = useCallback(async () => {
-    const image = await getNotebookImage(notebook.id);
-    setImage(image.data);
-  }, [notebook.id]);
-
   useEffect(() => {
+    let isMounted = true;
+    const fetchImage = async () => {
+      const image = await getNotebookImage(notebook.id);
+      if (isMounted) setImage(image.data);
+    };
     fetchImage();
-  }, [fetchImage]);
+    return () => {
+      isMounted = false;
+    };
+  }, [notebook.id]);
 
   return (
     <>
