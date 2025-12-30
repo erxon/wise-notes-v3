@@ -1,11 +1,13 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/supabaseServer";
+import { getAuthenticatedUrl } from "./s3";
 
 export interface Notebook {
   id?: string;
   name: string;
   description?: string;
+  cover_image_key?: string;
 }
 
 export async function getNotebooks() {
@@ -27,6 +29,23 @@ export async function getNotebooks() {
   return { data: data, error: null };
 }
 
+export async function getNotebookImage(notebookId: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("notebooks")
+    .select("cover_image_key")
+    .eq("id", notebookId)
+    .single();
+
+  if (error) return { data: null, error: error };
+  if (!data.cover_image_key) return { data: null, error: null };
+
+  const image = await getAuthenticatedUrl(data.cover_image_key);
+
+  return { data: image, error: null };
+}
+
 export async function createNotebook(notebook: Notebook) {
   const supabase = await createClient();
 
@@ -35,6 +54,7 @@ export async function createNotebook(notebook: Notebook) {
     .insert({
       name: notebook.name,
       description: notebook.description,
+      cover_image_key: notebook.cover_image_key,
     })
     .select("*")
     .single();
@@ -62,12 +82,13 @@ export async function updateNotebook(notebookId: string, notebook: Notebook) {
     .update({
       name: notebook.name,
       description: notebook.description,
+      cover_image_key: notebook.cover_image_key,
       updated_at: new Date().toISOString(),
     })
     .eq("id", notebookId)
     .select("*")
     .single();
-  console.log(error);
+
   if (error) throw error;
   return data;
 }

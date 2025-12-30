@@ -4,4 +4,5 @@ export default interface Notebook {
   description?: string;
   created_at: string;
   updated_at: string;
+  cover_image_key?: string;
 }

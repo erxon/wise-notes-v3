@@ -3,13 +3,6 @@ export default interface Project {
   name: string;
   description?: string;
   user_id: string;
+  cover_image_key?: string;
   created_at: string;
-  updated_at: string;
-}
-
-export interface ProjectDocument {
-  id: number;
-  project_id: number;
-  document_id: number;
-  added_at: string;
 }

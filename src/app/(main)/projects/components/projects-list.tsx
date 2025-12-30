@@ -1,9 +1,13 @@
 import { getProjects } from "@/app/server-actions/projects";
-import ProjectCard from "./project-card";
 import CreateProject from "../dialogs/create-project";
+import ProjectsView from "./projects-view";
+import { cookies } from "next/headers";
 
 export default async function ProjectsList() {
   const { data: projects } = await getProjects();
+  const cookieStore = await cookies();
+  const initialView =
+    (cookieStore.get("project-view")?.value as "grid" | "list") || "grid";
 
   if (projects.length === 0) {
     return (
@@ -35,11 +39,5 @@ export default async function ProjectsList() {
     );
   }
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {projects.map((project) => (
-        <ProjectCard key={project.id} project={project} />
-      ))}
-    </div>
-  );
+  return <ProjectsView projects={projects} initialView={initialView} />;
 }
