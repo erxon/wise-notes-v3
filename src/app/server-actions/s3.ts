@@ -9,16 +9,16 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const s3 = new S3Client({
-  region: process.env.NEXT_PUBLIC_AWS_REGION!,
+  region: process.env.AWS_REGION!,
   credentials: {
-    accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
 
 export async function getAuthenticatedUrl(key: string) {
   const command = new GetObjectCommand({
-    Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME!,
+    Bucket: process.env.AWS_BUCKET_NAME!,
     Key: key,
   });
 
@@ -34,7 +34,7 @@ export async function getUploadUrl(
   const uniqueFileName = `${folder}/${crypto.randomUUID()}.${extension}`;
 
   const command = new PutObjectCommand({
-    Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME!,
+    Bucket: process.env.AWS_BUCKET_NAME!,
     Key: uniqueFileName,
     ContentType: fileType,
   });
@@ -45,7 +45,7 @@ export async function getUploadUrl(
 
 export async function deleteObjectFromS3(key: string) {
   const command = new DeleteObjectCommand({
-    Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME!,
+    Bucket: process.env.AWS_BUCKET_NAME!,
     Key: key,
   });
 

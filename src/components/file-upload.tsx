@@ -22,7 +22,8 @@ export default function FileUpload() {
     });
 
     // 3. Save the reference in Supabase
-    const s3Url = `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.amazonaws.com/${file.name}`;
+    // Note: Ideally, you should store the key and get the URL from the server
+    const s3Url = `https://your-bucket-name.s3.amazonaws.com/${file.name}`; // Placeholder or fetch from server
     const { error } = await supabase
       .from("files")
       .insert({ file_name: file.name, url: s3Url });
